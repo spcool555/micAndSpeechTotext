@@ -30,33 +30,31 @@ function speechToText() {
     recognition.start();
     recognition.onresult = (event) => {
       const speechResult = event.results[0][0].transcript;
-      //detect when intrim results
+      // Detect when interim result
       if (event.results[0].isFinal) {
         result.innerHTML += " " + speechResult;
-        result.querySelector("p").remove();
+        result.querySelector(".interim").remove();
       } else {
-        //creative p with class interim if not already there
+        // Create p element with class interim if not already there
         if (!document.querySelector(".interim")) {
           const interim = document.createElement("p");
           interim.classList.add("interim");
           result.appendChild(interim);
         }
-        //update the interim p with the speech result
+        // Update the interim p with the speech result
         document.querySelector(".interim").innerHTML = " " + speechResult;
       }
       downloadBtn.disabled = false;
     };
     recognition.onspeechend = () => {
-      speechToText();
+      stopRecording();
     };
     recognition.onerror = (event) => {
       stopRecording();
       if (event.error === "no-speech") {
         alert("No speech was detected. Stopping...");
       } else if (event.error === "audio-capture") {
-        alert(
-          "No microphone was found. Ensure that a microphone is installed."
-        );
+        alert("No microphone was found. Ensure that a microphone is installed.");
       } else if (event.error === "not-allowed") {
         alert("Permission to use microphone is blocked.");
       } else if (event.error === "aborted") {
@@ -67,7 +65,6 @@ function speechToText() {
     };
   } catch (error) {
     recording = false;
-
     console.log(error);
   }
 }
